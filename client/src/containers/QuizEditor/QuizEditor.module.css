@@ -1,0 +1,61 @@
+.QuizEditor {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  flex-grow: 1;
+  width: 100%;
+  background: linear-gradient(270deg, #fcee21 0%, #ed1c24 100%);
+}
+
+.QuizEditor > div {
+  width: 100%;
+  max-width: 600px;
+  padding: 0 20px;
+}
+
+.QuizEditor form {
+  margin-bottom: 20px;
+}
+
+.QuizEditor h1 {
+  text-align: center;
+}
+
+.QuizEditor form {
+  background: #eee;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.QuizEditor button {
+  width: 185px;
+  padding: auto;
+  text-align: center;
+}
+
+.QuizEditor span {
+  width: 185px;
+}
+
+.ButtonsLine {
+  max-width: 450px;
+  margin: 15px auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Message {
+  text-align: center;
+  font-size: 16px;
+}
+
+.RightAlign {
+  text-align: right;
+}
+
+@media (max-width: 400px) {
+  .QuizEditor > div {
+    padding: 0;
+  }
+}
