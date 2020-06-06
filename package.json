@@ -23,7 +23,7 @@
   "author": "Oleg",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-express": "^2.13.1",
+    "apollo-server-express": "^2.14.2",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.4",
     "cross-env": "^6.0.3",
