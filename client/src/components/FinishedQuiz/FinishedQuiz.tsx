@@ -3,7 +3,29 @@ import classes from "./FinishedQuiz.module.css";
 import Button from "../UI/Button/Button";
 import { Link } from "react-router-dom";
 
-const FinishedQuiz = props => {
+interface Answer {
+  _id: string
+  id: number
+  text: string
+}
+
+interface IQuiz {
+  _id: string
+  id: number
+  question: string
+  rightAnswerId: number
+  answers: Answer[]
+}
+interface IProps {
+  results: {
+    [key: string]: string
+  }
+  quiz: Array<IQuiz>
+  onRetry: ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
+  disabled?: boolean
+}
+
+const FinishedQuiz: React.FC<IProps> = props => {
   const successCount = Object.keys(props.results).reduce((total, key) => {
     if (props.results[key] === "success") {
       total++;

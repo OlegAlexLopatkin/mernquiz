@@ -1,11 +1,24 @@
 // import axios from "axios";
 import axios from "../../axios/axios-quiz";
 import { AUTH_SUCCESS, AUTH_LOGOUT } from "./actionType";
+import {
+  ThunkAction
+} from './thunks';
 // import key from '../../keys'
 
-let timeout;
+type State = Object;
 
-export function auth(email, password, isLogin) {
+type Actions = {
+  type: string
+  token: string | null
+  userId: string
+
+} | {type: string};
+type ThunkResult<R> = ThunkAction<R, State, undefined, Actions>;
+
+let timeout: any;
+
+export function auth(email: string, password: string, isLogin: boolean): ThunkResult<void> {
   return async dispatch => {
     const authData = {
       email,
@@ -31,14 +44,14 @@ export function auth(email, password, isLogin) {
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("userId", data.userId);
-    localStorage.setItem("expirationDate", expirationDate);
+    localStorage.setItem("expirationDate", expirationDate.toString());
 
     dispatch(authSuccess(data.token, data.userId));
     dispatch(autoLogout(expirationDate.getTime() - new Date().getTime()));
   };
 }
 
-export function autoLogout(time) {
+export function autoLogout(time: number): ThunkResult<void> {
   return dispatch => {
     timeout = setTimeout(() => {
       dispatch(logout());
@@ -57,14 +70,14 @@ export function logout() {
   };
 }
 
-export function autoLogin() {
+export function autoLogin(): ThunkResult<void> {
   return dispatch => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     if (!token) {
       dispatch(logout());
     } else {
-      const expirationDate = new Date(localStorage.getItem("expirationDate"));
+      const expirationDate = new Date(localStorage.getItem("expirationDate") || "");
       if (expirationDate <= new Date()) {
         dispatch(logout());
       } else {
@@ -77,7 +90,7 @@ export function autoLogin() {
   };
 }
 
-export function authSuccess(token, userId) {
+export function authSuccess(token: string, userId: string | null) {
   return {
     type: AUTH_SUCCESS,
     token,

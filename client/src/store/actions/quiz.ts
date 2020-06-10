@@ -10,8 +10,91 @@ import {
   QUIZ_RETRY,
   FETCH_MY_QUIZES_SUCCESS,
 } from "./actionType";
+import { ThunkAction } from "./thunks";
 
-export function fetchQuizes() {
+interface IAnswerState {
+  [answerId: string]: "error" | "success"
+}
+
+type IResult = {
+  [answerId: string]: "error" | "success"
+}
+
+type State = {
+  auth: {
+    token: null | string
+    userId: string
+  }
+  quiz: IStateQuiz
+};
+
+interface IStateQuiz {
+  quizes: IQuize[],
+  loading: boolean,
+  error: null | Error,
+  results: IResult,
+  isFinished: boolean,
+  activeQuestion: number,
+  answerState: null | {[key: string]: string} ,
+  quiz: {
+    quiz: IDatabaseQuiz[]
+    quizTitle: string
+    userId: string
+    _id: string
+    __v: number
+  }
+  myquizes: IQuize[]
+}
+
+type IAnswer = {
+  _id: string
+  id: number
+  text: string
+}
+
+interface IDatabaseQuiz {
+  id: number
+  question: string
+  rightAnswerId: number
+  _id: string
+  answers: IAnswer[]
+}
+
+type ThunkResult<R> = ThunkAction<R, State, undefined, IAction>;
+
+interface IQuize {
+  id: string;
+  name: string;
+  quizTitle: string;
+}
+
+interface IData {
+  _id: string;
+  quizTitle: string;
+}
+
+interface IDataId {
+  _id: string;
+  quizTitle: string;
+  userId: string;
+}
+
+type IAction =
+  | {
+      type: string;
+    }
+  | {
+      type: string;
+      myquizes: IQuize[];
+    }
+  | { type: string; quiz: IQuize }
+  | { type: string; quizes: IQuize[] }
+  | { type: string; error: Error}
+  | { type: string; number: number }
+  | { type: string;answerState: null | {[key: string]: string}; results: IResult
+  }
+
+export function fetchQuizes(): ThunkResult<void> {
   return async (dispatch) => {
     dispatch(fetchQuizesStart());
     try {
@@ -25,11 +108,13 @@ export function fetchQuizes() {
       //   });
       // });
 
-      const quizes = response.data.map(({ _id, quizTitle }, index) => ({
-        id: _id,
-        name: `Тест №${index + 1}`,
-        quizTitle,
-      }));
+      const quizes: IQuize[] = response.data.map(
+        ({ _id, quizTitle }: IData, index: number) => ({
+          id: _id,
+          name: `Тест №${index + 1}`,
+          quizTitle,
+        })
+      );
 
       dispatch(fetchQuizesSuccess(quizes));
     } catch (e) {
@@ -38,12 +123,12 @@ export function fetchQuizes() {
   };
 }
 
-export function fetchMyQuizes() {
+export function fetchMyQuizes(): ThunkResult<void> {
   return async (dispatch, getState) => {
     dispatch(fetchQuizesStart());
     try {
       const response = await axios.get("/quizes");
-      const myquizes = [];
+      const myquizes: IQuize[] = [];
       const data = response.data;
       // console.log(data);
       // let index = 0
@@ -57,7 +142,7 @@ export function fetchMyQuizes() {
       //     });
       //   }
       // }
-      data.forEach(({ userId, _id, quizTitle }, index) => {
+      data.forEach(({ userId, _id, quizTitle }: IDataId, index: number) => {
         if (userId === getState().auth.userId) {
           myquizes.push({
             id: _id,
@@ -76,7 +161,7 @@ export function fetchMyQuizes() {
   };
 }
 
-export function fetchQuizById(quizId) {
+export function fetchQuizById(quizId: string): ThunkResult<void> {
   return async (dispatch) => {
     dispatch(fetchQuizesStart());
 
@@ -91,7 +176,7 @@ export function fetchQuizById(quizId) {
   };
 }
 
-export function deleteQuizById(quizId) {
+export function deleteQuizById(quizId: string): ThunkResult<void> {
   return async (dispatch, getState) => {
     dispatch(fetchQuizesStart());
 
@@ -103,9 +188,9 @@ export function deleteQuizById(quizId) {
       });
       const response = await axios.get("/quizes");
       const data = response.data;
-      let quizes = [];
+      let quizes: IQuize[] = [];
       if (data) {
-        quizes = data.map(({ _id, quizTitle }, index) => ({
+        quizes = data.map(({ _id, quizTitle }: IData, index: number) => ({
           id: _id,
           name: `Тест №${index + 1}`,
           quizTitle,
@@ -113,9 +198,9 @@ export function deleteQuizById(quizId) {
       }
 
       dispatch(fetchQuizesSuccess(quizes));
-      const myquizes = [];
+      const myquizes: IQuize[] = [];
       if (data) {
-        data.forEach(({ _id, quizTitle, userId }, index) => {
+        data.forEach(({ _id, quizTitle, userId }: IDataId, index: number) => {
           if (userId === getState().auth.userId) {
             myquizes.push({
               id: _id,
@@ -141,41 +226,41 @@ export function deleteQuizById(quizId) {
   };
 }
 
-export function fetchQuizSuccess(quiz) {
+export function fetchQuizSuccess(quiz: IQuize): IAction {
   return {
     type: FETCH_QUIZ_SUCCESS,
     quiz,
   };
 }
 
-export function fetchQuizesStart() {
+export function fetchQuizesStart(): IAction {
   return {
     type: FETCH_QUIZES_START,
   };
 }
 
-export function fetchQuizesSuccess(quizes) {
+export function fetchQuizesSuccess(quizes: IQuize[]): IAction {
   return {
     type: FETCH_QUIZES_SUCCESS,
     quizes,
   };
 }
 
-export function fetchMyQuizesSuccess(myquizes) {
+export function fetchMyQuizesSuccess(myquizes: IQuize[]): IAction {
   return {
     type: FETCH_MY_QUIZES_SUCCESS,
     myquizes,
   };
 }
 
-export function fetchQuizesError(e) {
+export function fetchQuizesError(e: Error): IAction {
   return {
     type: FETCH_QUIZES_ERROR,
     error: e,
   };
 }
 
-export function quizSetState(answerState, results) {
+export function quizSetState(answerState: IAnswerState, results: IResult): IAction {
   return {
     type: QUIZ_SET_STATE,
     answerState,
@@ -183,26 +268,28 @@ export function quizSetState(answerState, results) {
   };
 }
 
-export function finishQuiz() {
+export function finishQuiz(): IAction {
   return {
     type: FINISH_QUIZ,
   };
 }
 
-export function quizNextQuestion(number) {
+export function quizNextQuestion(
+  number: number
+): IAction {
   return {
     type: QUIZ_NEXT_QUESTION,
     number,
   };
 }
 
-export function retryQuiz() {
+export function retryQuiz(): IAction {
   return {
     type: QUIZ_RETRY,
   };
 }
 
-export function quizAnswerClick(answerId) {
+export function quizAnswerClick(answerId: number): ThunkResult<void> {
   return (dispatch, getState) => {
     const state = getState().quiz;
 
@@ -237,6 +324,6 @@ export function quizAnswerClick(answerId) {
   };
 }
 
-function isQuizFinished(state) {
+function isQuizFinished(state: IStateQuiz): boolean {
   return state.activeQuestion + 1 === state.quiz.quiz.length;
 }

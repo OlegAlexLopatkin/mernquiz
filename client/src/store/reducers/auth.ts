@@ -1,10 +1,21 @@
 import { AUTH_SUCCESS, AUTH_LOGOUT } from "../actions/actionType";
-const initialState = {
+
+interface IInitialState {
+  token: null | string
+  userId: string
+}
+
+interface IAction {
+  type: string
+  token?: string
+  userId?: string
+}
+const initialState: IInitialState = {
   token: null,
   userId: ""
 };
 
-export default function authReducer(state = initialState, action) {
+export default function authReducer(state: IInitialState = initialState, action: IAction) {
   switch (action.type) {
     case AUTH_SUCCESS:
       return {

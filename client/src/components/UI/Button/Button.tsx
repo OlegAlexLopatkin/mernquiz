@@ -1,7 +1,14 @@
 import React from "react";
 import classes from "./Button.module.css";
 
-const Button = props => {
+interface IProps {
+  onClick?: ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
+  disabled?: boolean
+  children: string
+  type: string
+}
+
+const Button: React.FC<IProps> = props => {
   const cls = [classes.Button, classes[props.type]];
   return (
     <button

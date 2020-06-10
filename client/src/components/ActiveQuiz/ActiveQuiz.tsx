@@ -2,7 +2,28 @@ import React from "react";
 import classes from "./ActiveQuiz.module.css";
 import AnswersList from "./AnswersList/AnswersList";
 
-const ActiveQuiz = props => (
+
+interface Answer {
+  _id: string;
+  id: number;
+  text: string;
+}
+
+interface IState {
+  [key: number]: string | undefined | null;
+}
+
+interface IProps {
+  answerNumber: number
+  state: IState
+  quizLength: number
+  question: string
+  onAnswerClick: Function
+  answers: Array<Answer>
+}
+
+const ActiveQuiz: React.FC<IProps> = props => {
+  return (
   <div className={classes.ActiveQuiz}>
     <p className={classes.Question}>
       <span>
@@ -19,6 +40,6 @@ const ActiveQuiz = props => (
       onAnswerClick={props.onAnswerClick}
     />
   </div>
-);
+)};
 
 export default ActiveQuiz;

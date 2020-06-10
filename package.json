@@ -23,6 +23,8 @@
   "author": "Oleg",
   "license": "ISC",
   "dependencies": {
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.5",
     "apollo-server-express": "^2.13.1",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.4",

@@ -2,10 +2,27 @@ import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import classes from "./QuizList.module.css";
 import Loader from "../../components/UI/Loader/Loader";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, TypedUseSelectorHook  } from "react-redux";
 import { fetchQuizes } from "../../store/actions/quiz";
 
-const QuizList = props => {
+type IPops = {}
+
+interface IQuize {
+  id: string;
+  name: string;
+  quizTitle: string;
+}
+
+interface RootState {
+  quiz: {
+    quizes: IQuize[]
+    loading: boolean
+  }
+}
+
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector
+
+const QuizList: React.FC<IPops> = () => {
   const renderQuizes = () => {
     return quizes.map(quiz => {
       return (
@@ -19,7 +36,7 @@ const QuizList = props => {
     });
   };
   const dispatch = useDispatch();
-  const { quizes, loading } = useSelector(state => state.quiz);
+  const { quizes, loading } = useTypedSelector(state => state.quiz);
   // console.log('quizes', quizes)
 
   useEffect(() => {

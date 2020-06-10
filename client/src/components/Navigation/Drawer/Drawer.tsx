@@ -3,11 +3,25 @@ import classes from "./Drawer.module.css";
 import { NavLink } from "react-router-dom";
 import Backdrop from "../../UI/Backdrop/Backdrop";
 
-const Drawer = props => {
+interface IProps {
+  isOpen: boolean
+  isAuthenticated: boolean
+  onClose: () => void
+}
+
+interface ILink {
+  to: string
+  label: string
+  exact: boolean
+}
+
+
+
+const Drawer: React.FC<IProps> = props => {
   const clickHandler = () => {
     props.onClose();
   };
-  const renderLinks = links => {
+  const renderLinks = (links: ILink[]) => {
     return links.map((link, index) => {
       return (
         <li key={index}>

@@ -1,14 +1,31 @@
 import React from "react";
 import classes from "./Input.module.css";
 
-function isInvalid({ valid, touched, shouldValidate }) {
+interface IValid {
+  valid: boolean
+  touched: boolean
+  shouldValidate: boolean
+}
+
+function isInvalid({ valid, touched, shouldValidate }: IValid ): boolean {
   return !valid && shouldValidate && touched;
 }
 
-const Input = props => {
-  const inputType = props.type || "text";
-  const cls = [classes.Input];
-  const htmlFor = `${inputType}-${Math.random()}`;
+interface IProps {
+  type?: string
+  label: string
+  value: string
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  errorMessage: string
+  valid: boolean
+  touched: boolean
+  shouldValidate: boolean
+}
+
+const Input: React.FC<IProps> = props => {
+  const inputType: string = props.type || "text";
+  const cls: string[] = [classes.Input];
+  const htmlFor: string = `${inputType}-${Math.random()}`;
 
   if (isInvalid(props)) {
     cls.push(classes.invalid);

@@ -1,7 +1,19 @@
 import React from "react";
 import classes from "./Select.module.css";
 
-const Select = props => {
+interface IOption {
+  value: string
+  text: string
+}
+
+interface IProps {
+  label: string
+  value: string
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  options: Array<IOption>
+}
+
+const Select: React.FC<IProps> = props => {
   const htmlFor = `${props.label}-${Math.random()}`;
   return (
     <div className={classes.Select}>

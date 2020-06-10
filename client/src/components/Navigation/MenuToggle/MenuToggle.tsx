@@ -1,7 +1,12 @@
 import React from "react";
 import classes from "./MenuToggle.module.css";
 
-const MenuToggle = props => {
+type IProps = {
+  onToggle: () => void
+  isOpen: boolean
+}
+
+const MenuToggle: React.FC<IProps> = props => {
   const cls = [classes.MenuToggle, "fa"];
   if (props.isOpen) {
     cls.push("fa-times");
